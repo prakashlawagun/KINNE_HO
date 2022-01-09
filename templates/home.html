@@ -1,0 +1,20 @@
+{% extends 'base.html'%}
+{% block title %}Home{% endblock%}
+{% block main%}
+<div class="container">
+    <h1 class="text-center">Welcome to <span class="text-danger">KINNE HO</span></h1>
+ <hr>
+<div class="row mt-3">
+{% for p in product_list %}
+ <div class="col-md-3">
+  <div class="m-4">
+      <h3><a href="/productdetials/{{p.slug}}">{{p.title}}</a></h3>
+<img src="{{p.image.url}}" alt="" class="img-fluid" style="height:2500; object-fit:cover;"><br><br>
+  <p>Price: <strike>{{p.marked_price}}</strike> Rs.{{p.selling_price}}</p>
+  <a href="{% url 'ecomapp:addtocart' p.id %}" class="btn btn-primary">Add To Cart</a>
+   </div>
+</div>
+ {% endfor %}
+</div>
+</div>
+{% endblock %}

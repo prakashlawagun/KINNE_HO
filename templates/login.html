@@ -1,0 +1,17 @@
+{% extends 'base.html'%}
+{% load bootstrap %}
+{% block title %}Log in{% endblock%}
+{% block main%}
+<div class="container">
+        <h3>User Log in</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form | bootstrap_horizontal}}
+            {% if error %}
+            <li style="color:red;">{{error}}</li>
+            {%endif%}
+            <button type="submit" class="btn btn-info">Log in</button>
+            <p>or don't have account?<a href="{% url 'ecomapp:register'%}{%if request.GET.next%}?next={{request.GET.next}}{%endif%}"> Register here</a></p>
+        </form>
+    </div>
+{% endblock %}

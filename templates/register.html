@@ -1,0 +1,19 @@
+{% extends 'base.html'%}
+{% load bootstrap %}
+{% block title %}Registration{% endblock%}
+{% block main%}
+<style>
+    .help-block{
+      color : red;
+    }
+</style>
+    <div class="container">
+        <h3>User Registration</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form | bootstrap_horizontal}}
+            <button type="submit" class="btn btn-info">Sign Up</button>
+            <p>Already have account?<a href="{% url 'ecomapp:login'%}"> Login here</a></p>
+        </form>
+    </div>
+{% endblock %}
