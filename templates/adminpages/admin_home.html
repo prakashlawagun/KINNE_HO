@@ -1,0 +1,34 @@
+{% extends 'adminpages/admin_base.html'%}
+{% block title %}AdminHome{% endblock%}
+{% block main%}
+<div class="container">
+    <h1 class="text-center">Welcome to <span class="text-danger">KINNE HO</span></h1>
+ <div class="row">
+     <div class="col-md-12">
+         <h3>Pending Orders</h3>
+         <table class="table">
+                <thead>
+                <tr>
+                    <th>SN</th>
+                    <th>Customer</th>
+                     <th>Order ID</th>
+                    <th>Order on</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
+                 <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><a href="{% url 'ecomapp:admindetail' order.id %}">#ORDER_{{order.id}}</a></td>
+                    <td>{{order.ordered_by}}</td>
+                      <td>{{order.created_at}}</td>
+                      <td>{{order.total}}</td>
+                </tr>
+                {% endfor %}
+         </tbody>
+         </table>
+     </div>
+ </div>
+</div>
+{% endblock %}

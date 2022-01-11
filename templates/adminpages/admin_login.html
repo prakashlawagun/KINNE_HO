@@ -1,0 +1,16 @@
+{% extends 'adminpages/admin_base.html'%}
+{% load bootstrap %}
+{% block title %}Admin Login{% endblock%}
+{% block main%}
+<div class="container">
+        <h3>Admin Log in</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form | bootstrap_horizontal}}
+            {% if error %}
+            <li style="color:red;">{{error}}</li>
+            {%endif%}
+            <button type="submit" class="btn btn-info">Log in</button>
+        </form>
+    </div>
+{% endblock %}

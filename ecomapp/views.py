@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import View, TemplateView, CreateView, FormView, DetailView
+from django.views.generic import View, TemplateView, CreateView, FormView, DetailView,ListView
 from .models import *
 from .forms import CustomerRegisterForm, CheckoutForm, CustomerLoginForm
 from django.urls import reverse_lazy
@@ -226,7 +226,7 @@ class CustomerLoginView(FormView):
         uname = form.cleaned_data.get("username")
         pwd = form.cleaned_data["password"]
         user_obj = authenticate(username=uname, password=pwd)
-        if user_obj is not None and user_obj.customer:
+        if user_obj is not None and Customer.objects.filter(user=user_obj).exists():
             login(self.request, user_obj)
         else:
             return render(self.request, self.template_name, {"form": self.form_class, "error": "Invalid credentials"})
@@ -244,7 +244,7 @@ class CustomerProfileView(TemplateView):
     template_name = "profile.html"
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.customer:
+        if request.user.is_authenticated and Customer.objects.filter(user=request.user).exists():
             pass
         else:
             return redirect("/login/?next=/profile/")
@@ -266,15 +266,62 @@ class CustomerOrderDetailView(DetailView):
     context_object_name = "ord_obj"
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.customer:
+        if request.user.is_authenticated and Customer.objects.filter(user=request.user).exists():
             order_id = self.kwargs["pk"]
-            order = Order.objects.get(id = order_id)
-            if request.user.customer !=  order.cart.customer:
+            order = Order.objects.get(id=order_id)
+            if request.user.customer != order.cart.customer:
                 return redirect("ecomapp:profile")
         else:
             return redirect("/login/?next=/profile/")
 
         return super().dispatch(request, *args, **kwargs)
+
+
+class AdminLoginView(FormView):
+    template_name = "adminpages/admin_login.html"
+    form_class = CustomerLoginForm
+    success_url = reverse_lazy("ecomapp:adminhome")
+
+    def form_valid(self, form):
+        uname = form.cleaned_data.get("username")
+        pwd = form.cleaned_data["password"]
+        user_obj = authenticate(username=uname, password=pwd)
+        if user_obj is not None and Admin.objects.filter(user=user_obj).exists():
+            login(self.request, user_obj)
+        else:
+            return render(self.request, self.template_name, {"form": self.form_class, "error": "Invalid credentials"})
+        return super().form_valid(form)
+
+
+class AdminRequiredMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and Admin.objects.filter(user=request.user).exists():
+            pass
+        else:
+            return redirect("/adminlogin/")
+        return super().dispatch(request,*args,**kwargs)
+
+
+class AdminHomeView(AdminRequiredMixin, TemplateView):
+    template_name = "adminpages/admin_home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['orders'] = Order.objects.filter(order_status="Order Received").order_by("-id")
+
+        return context
+
+
+class AdminOrderDetailView(AdminRequiredMixin, DetailView):
+    template_name = "adminpages/adminorderdetails.html"
+    model = Order
+    context_object_name = "ord_obj"
+
+
+class AdminAllOrderView(AdminRequiredMixin,ListView):
+    template_name ="adminpages/alladminorders.html"
+    queryset = Order.objects.all().order_by("-id")
+    context_object_name = "allorders"
 
 
 class AboutView(EcomMixin, TemplateView):
