@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import View, TemplateView, CreateView, FormView, DetailView,ListView
+from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
 from .models import *
 from .forms import CustomerRegisterForm, CheckoutForm, CustomerLoginForm
 from django.urls import reverse_lazy
@@ -299,7 +299,7 @@ class AdminRequiredMixin(object):
             pass
         else:
             return redirect("/adminlogin/")
-        return super().dispatch(request,*args,**kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AdminHomeView(AdminRequiredMixin, TemplateView):
@@ -311,18 +311,34 @@ class AdminHomeView(AdminRequiredMixin, TemplateView):
 
         return context
 
-#adminOrderDetailView
 
 class AdminOrderDetailView(AdminRequiredMixin, DetailView):
     template_name = "adminpages/adminorderdetails.html"
     model = Order
     context_object_name = "ord_obj"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["allstatus"] = ORDER_STATUS
 
-class AdminAllOrderView(AdminRequiredMixin,ListView):
-    template_name ="adminpages/alladminorders.html"
+        return context
+
+
+class AdminAllOrderView(AdminRequiredMixin, ListView):
+    template_name = "adminpages/alladminorders.html"
     queryset = Order.objects.all().order_by("-id")
     context_object_name = "allorders"
+
+
+class AdminOrderStatusView(AdminRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        order_id = self.kwargs["pk"]
+        ord_obj = Order.objects.get(id=order_id)
+        new_status = request.POST.get("status")
+        ord_obj.order_status = new_status
+        ord_obj.save()
+
+        return redirect(reverse_lazy("ecomapp:admindetail", kwargs={"pk": order_id}))
 
 
 class AboutView(EcomMixin, TemplateView):
