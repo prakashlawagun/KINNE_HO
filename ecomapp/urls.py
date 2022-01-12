@@ -18,6 +18,10 @@ urlpatterns = [
     path("login/",CustomerLoginView.as_view(),name="login"),
     path("profile/",CustomerProfileView.as_view(),name="profile"),
     path("profile/order-<int:pk>/", CustomerOrderDetailView.as_view(), name="customerorderdetail"),
+    path("search/",SearchView.as_view(),name="search"),
+
+
+    # Admin urls functionality
     path("adminlogin/",AdminLoginView.as_view(),name="adminlogin"),
     path("adminhome/",AdminHomeView.as_view(),name="adminhome"),
     path("admin-order-detail/<int:pk>",AdminOrderDetailView.as_view(),name="admindetail"),

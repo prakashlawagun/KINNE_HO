@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.db.models import Q
 from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
 from .models import *
 from .forms import CustomerRegisterForm, CheckoutForm, CustomerLoginForm
@@ -275,6 +276,17 @@ class CustomerOrderDetailView(DetailView):
             return redirect("/login/?next=/profile/")
 
         return super().dispatch(request, *args, **kwargs)
+
+
+class SearchView(TemplateView):
+    template_name = "search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        kw = self.request.GET.get("keyword")
+        results = Product.objects.filter(Q(title__icontains=kw) | Q(description__icontains=kw))
+        context["results"] = results
+        return context
 
 
 class AdminLoginView(FormView):
