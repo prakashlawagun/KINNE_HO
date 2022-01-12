@@ -311,6 +311,7 @@ class AdminHomeView(AdminRequiredMixin, TemplateView):
 
         return context
 
+#adminOrderDetailView
 
 class AdminOrderDetailView(AdminRequiredMixin, DetailView):
     template_name = "adminpages/adminorderdetails.html"
