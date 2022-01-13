@@ -11,6 +11,7 @@
             <div class="col-md-6">
                 <h3>Search Result for <span class="text-success">"{{request.GET.keyword}}"</span></h3>
                  <hr>
+                {% if results%}
                 {% for result in results %}
                 <div class="row">
                     <div class="col-md-6">
@@ -24,6 +25,9 @@
                 </div>
 
                 {%  endfor %}
+                {%else%}
+                <h2>No Result Found</h2>
+                {% endif %}
 
             </div>
         </div>
