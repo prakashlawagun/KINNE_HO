@@ -36,7 +36,7 @@
                     <td>{{order.total}}</td>
                     <td>{{order.created_at|timesince}} ago</td>
                     <td>{{order.order_status}}</td>
-                     <td><a class="btn btn-info text-light">Cancel</a></td>
+                     <td><a href="{% url 'ecomapp:cancelorder' order.id%}" class="btn btn-info text-light">Cancel</a></td>
                     </tr>
                       {% endfor %}
                   </table>

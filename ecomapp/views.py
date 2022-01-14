@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.core.paginator import Paginator
-from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView
+from django.views.generic import View, TemplateView, CreateView, FormView, DetailView, ListView, DeleteView
 from .models import *
 from .forms import CustomerRegisterForm, CheckoutForm, CustomerLoginForm
 from django.urls import reverse_lazy
@@ -292,6 +292,14 @@ class SearchView(TemplateView):
         results = Product.objects.filter(Q(title__icontains=kw) | Q(description__icontains=kw))
         context["results"] = results
         return context
+
+
+class CustomerCancelOrderView(DeleteView):
+    model = Order
+    template_name = "cancelOrder.html"
+    success_url = reverse_lazy("ecomapp:profile")
+
+
 
 
 class AdminLoginView(FormView):

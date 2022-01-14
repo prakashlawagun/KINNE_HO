@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 
 
 # Create your models here.
@@ -89,3 +90,6 @@ class Order(models.Model):
 
     def __str__(self):
         return "Order: " + str(self.id)
+
+    def get_cancel_order_url(self):
+        return reverse_lazy('ecomapp:CustomerCancelOrderView', args=[self.pk])

@@ -1,0 +1,13 @@
+{% extends 'base.html'%}
+{% load bootstrap %}
+{% block title %}Cancel Order{% endblock%}
+{% block main%}
+<div class="container">
+        <h3>Cancel Order</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <p>Are you sure you want to cancel ?</p>
+            <button type="submit" class="btn btn-danger">Cancel Order</button>
+        </form>
+    </div>
+{% endblock %}
